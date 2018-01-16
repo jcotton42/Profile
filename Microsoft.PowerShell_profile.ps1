@@ -1,0 +1,1 @@
+Set-PSReadlineOption -BellStyle Visual
