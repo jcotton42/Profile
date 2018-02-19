@@ -2,7 +2,7 @@ function Import-VisualStudioEnvironment {
     [CmdletBinding()]
     param(
         [ValidateNotNullOrEmpty()]
-        [Alias("VSVersion")]
+        [Alias("VSVersion", "Version")]
         [string] $VisualStudioVersion = "2017",
 
         [ValidateSet("x86", "amd64", "arm", "arm64")]
@@ -21,12 +21,13 @@ function Import-VisualStudioEnvironment {
     $batArgs = (
         "-arch=$Architecture",
         "-host_arch=$HostArchitecture",
-        "-app_platform=$AppPlatform"
+        "-app_platform=$AppPlatform",
+        "-no_logo"
     )
     cmd /c "C:\Program Files (x86)\Microsoft Visual Studio\$VisualStudioVersion\Enterprise\Common7\Tools\VsDevCmd.bat" @batArgs `& set |
         where { $_ -match '=' } |
         foreach {
             $name, $value = $_ -split '=', 2
-            Set-Content Env:\$name $value
+            Set-Content "Env:\$name" $value
         }
 }
