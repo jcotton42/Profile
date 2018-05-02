@@ -1,8 +1,8 @@
-$psFormatsOptions.HumanizeDate = $true
-$psFormatsOptions.HumanizeSize = $true
+$Global:psFormatsOptions.HumanizeDate = $true
+$Global:psFormatsOptions.HumanizeSize = $true
 
-$GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
-$GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
+$Global:GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
+$Global:GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
 
 if(! (Test-Path $PSScriptRoot\Cache)) {
     New-Item $PSScriptRoot\Cache -ItemType Directory
@@ -103,6 +103,6 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
         }
 }
 
-$PSDefaultParameterValues["Out-File:Encoding"] = 'utf8'
+$Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8'
 
 Set-Alias npp 'C:\Program Files (x86)\Notepad++\notepad++.exe'
