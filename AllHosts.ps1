@@ -105,4 +105,4 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8'
 
-Set-Alias npp 'C:\Program Files (x86)\Notepad++\notepad++.exe'
+Remove-Item Alias:\curl -Force
