@@ -100,8 +100,7 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
         return
     }
 
-    $commonParameters = @('Debug', 'ErrorAction', 'ErrorVariable', 'InformationAction', 'InformationVariable',
-        'OutVariable', 'OutBuffer', 'PipelineVariable', 'Verbose', 'WarningAction', 'WarningVariable', 'WhatIf', 'Confirm')
+    $commonParameters = [System.Management.Automation.Cmdlet]::CommonParameters + [System.Management.Automation.Cmdlet]::OptionalCommonParameters
 
     $cmd.Parameters.Keys |
         where { $_ -like "$WordToComplete*" -and $_ -notin $commonParameters } |
