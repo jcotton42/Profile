@@ -109,4 +109,4 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
         }
 }
 
-$Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8'
+$Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
