@@ -4,7 +4,7 @@ $Global:psFormatsOptions.HumanizeSize = $true
 $Global:GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
 $Global:GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
 
-if(! (Test-Path $PSScriptRoot\Cache)) {
+if(-not (Test-Path $PSScriptRoot\Cache)) {
     New-Item $PSScriptRoot\Cache -ItemType Directory
 }
 
@@ -12,24 +12,28 @@ function __UpdateCompletionCache {
     $COM = Get-CimInstance -ClassName Win32_ClassicCOMClassSetting -Filter 'VersionIndependentProgId IS NOT NULL' |
         foreach {
             $progid = $_.VersionIndependentProgId
+
             if($_.Caption) {
                 $caption = $_.Caption
             } else {
                 $caption = $progid
             }
+
             if($_.Description) {
                 $description = $_.Description
             } else {
                 $description = $progid
             }
+
             [pscustomobject]@{
                 ProgId = $progid
                 Caption = $caption
                 Description = $description
             }
         }
+
     $Script:CompletionCache = [pscustomobject]@{
-        COM=$COM
+        COM = $COM
     }
     $Script:CompletionCache | Export-Clixml $PSScriptRoot\Cache\CompletionCache.ps1xml
 }
@@ -48,17 +52,20 @@ Register-ArgumentCompleter -CommandName Register-ArgumentCompleter -ParameterNam
         [System.Management.Automation.Language.CommandAst]$CommandAst,
         [System.Collections.IDictionary]$FakeBoundParameters
     )
+
     if(-not $FakeBoundParameters['CommandName']) {
         return
     }
+
     $cmd = Get-Command $FakeBoundParameters['CommandName']
+
     while($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
     $cmd |
         foreach Parameters |
         foreach Keys |
         where { $_ -like "$WordToComplete*" } |
         foreach {
-            New-Object System.Management.Automation.CompletionResult $_, $_, 'ParameterName', $_
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
         }
 }
 
@@ -73,7 +80,7 @@ Register-ArgumentCompleter -CommandName New-Object -ParameterName ComObject -Scr
     $Script:CompletionCache.COM |
         where ProgId -like "$WordToComplete*" |
         foreach {
-            New-Object System.Management.Automation.CompletionResult $_.ProgId, $_.ProgId, 'Type', $_.Caption
+            [System.Management.Automation.CompletionResult]::new($_.ProgId, $_.ProgId, 'Type', $_.Caption)
         }
 }
 
@@ -93,16 +100,14 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
         return
     }
 
+    $commonParameters = @('Debug', 'ErrorAction', 'ErrorVariable', 'InformationAction', 'InformationVariable',
+        'OutVariable', 'OutBuffer', 'PipelineVariable', 'Verbose', 'WarningAction', 'WarningVariable', 'WhatIf', 'Confirm')
+
     $cmd.Parameters.Keys |
-        where { $_ -like "$WordToComplete*" } |
-        where { $_ -notin ('Debug', 'ErrorAction', 'ErrorVariable', 'InformationAction', 'InformationVariable',
-            'OutVariable', 'OutBuffer', 'PipelineVariable', 'Verbose', 'WarningAction', 'WarningVariable',
-            'WhatIf', 'Confirm') } | # filter out common parameters
+        where { $_ -like "$WordToComplete*" -and $_ -notin $commonParameters } |
         foreach {
-            New-Object System.Management.Automation.CompletionResult $_, $_, 'ParameterName', $_
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
         }
 }
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8'
-
-Remove-Item Alias:\curl -Force
