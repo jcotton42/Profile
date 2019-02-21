@@ -110,3 +110,5 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
 }
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
+# Load rg completions
+& (Join-Path (Split-Path -Path (scoop which rg)) _rg.ps1)
