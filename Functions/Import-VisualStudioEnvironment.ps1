@@ -15,7 +15,9 @@ function Import-VisualStudioEnvironment {
 
         [ValidateSet("Desktop", "UWP")]
         [Alias("app_platform")]
-        [string] $AppPlatform = "Desktop"
+        [string] $AppPlatform = "Desktop",
+
+        [string] $Edition = "Enterprise"
     )
 
     $batArgs = (
@@ -24,7 +26,7 @@ function Import-VisualStudioEnvironment {
         "-app_platform=$AppPlatform",
         "-no_logo"
     )
-    cmd /c "C:\Program Files (x86)\Microsoft Visual Studio\$VisualStudioVersion\Enterprise\Common7\Tools\VsDevCmd.bat" @batArgs `& set |
+    cmd /c "C:\Program Files (x86)\Microsoft Visual Studio\$VisualStudioVersion\$Edition\Common7\Tools\VsDevCmd.bat" @batArgs `& set |
         where { $_ -match '=' } |
         foreach {
             $name, $value = $_ -split '=', 2
