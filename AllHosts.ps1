@@ -3,6 +3,8 @@ $Global:psFormatsOptions.HumanizeSize = $true
 
 $Global:GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
 $Global:GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
+# removes 'posh~git ~' prefix
+$Global:GitPromptSettings.EnableWindowTitle = $true
 
 if(-not (Test-Path $PSScriptRoot\Cache)) {
     New-Item $PSScriptRoot\Cache -ItemType Directory
