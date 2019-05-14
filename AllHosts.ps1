@@ -12,27 +12,27 @@ if(-not (Test-Path $PSScriptRoot\Cache)) {
 
 function __UpdateCompletionCache {
     $COM = Get-CimInstance -ClassName Win32_ClassicCOMClassSetting -Filter 'VersionIndependentProgId IS NOT NULL' |
-        foreach {
-            $progid = $_.VersionIndependentProgId
+    foreach {
+        $progid = $_.VersionIndependentProgId
 
-            if($_.Caption) {
-                $caption = $_.Caption
-            } else {
-                $caption = $progid
-            }
-
-            if($_.Description) {
-                $description = $_.Description
-            } else {
-                $description = $progid
-            }
-
-            [pscustomobject]@{
-                ProgId = $progid
-                Caption = $caption
-                Description = $description
-            }
+        if($_.Caption) {
+            $caption = $_.Caption
+        } else {
+            $caption = $progid
         }
+
+        if($_.Description) {
+            $description = $_.Description
+        } else {
+            $description = $progid
+        }
+
+        [pscustomobject]@{
+            ProgId      = $progid
+            Caption     = $caption
+            Description = $description
+        }
+    }
 
     $Script:CompletionCache = [pscustomobject]@{
         COM = $COM
@@ -63,12 +63,12 @@ Register-ArgumentCompleter -CommandName Register-ArgumentCompleter -ParameterNam
 
     while($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
     $cmd |
-        foreach Parameters |
-        foreach Keys |
-        where { $_ -like "$WordToComplete*" } |
-        foreach {
-            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
-        }
+    foreach Parameters |
+    foreach Keys |
+    where { $_ -like "$WordToComplete*" } |
+    foreach {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
+    }
 }
 
 Register-ArgumentCompleter -CommandName New-Object -ParameterName ComObject -ScriptBlock {
@@ -80,10 +80,10 @@ Register-ArgumentCompleter -CommandName New-Object -ParameterName ComObject -Scr
         [System.Collections.IDictionary]$FakeBoundParameters
     )
     $Script:CompletionCache.COM |
-        where ProgId -like "$WordToComplete*" |
-        foreach {
-            [System.Management.Automation.CompletionResult]::new($_.ProgId, $_.ProgId, 'Type', $_.Caption)
-        }
+    where ProgId -like "$WordToComplete*" |
+    foreach {
+        [System.Management.Automation.CompletionResult]::new($_.ProgId, $_.ProgId, 'Type', $_.Caption)
+    }
 }
 
 Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -ScriptBlock {
@@ -105,12 +105,12 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
     $commonParameters = [System.Management.Automation.Cmdlet]::CommonParameters + [System.Management.Automation.Cmdlet]::OptionalCommonParameters
 
     $cmd.Parameters.Keys |
-        where { $_ -like "$WordToComplete*" -and $_ -notin $commonParameters } |
-        foreach {
-            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
-        }
+    where { $_ -like "$WordToComplete*" -and $_ -notin $commonParameters } |
+    foreach {
+        [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterName', $_)
+    }
 }
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
 # Load rg completions
-& (Join-Path (Split-Path -Path (scoop which rg)) _rg.ps1)
+. "$env:ChocolateyInstall\lib\ripgrep\tools\_rg.ps1"
