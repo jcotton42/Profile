@@ -3,8 +3,6 @@ $Global:psFormatsOptions.HumanizeSize = $true
 
 $Global:GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
 $Global:GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
-# removes 'posh~git ~' prefix
-$Global:GitPromptSettings.EnableWindowTitle = $true
 
 if(-not (Test-Path $PSScriptRoot\Cache)) {
     New-Item $PSScriptRoot\Cache -ItemType Directory
@@ -113,4 +111,4 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
 # Load rg completions
-. "$env:ChocolateyInstall\lib\ripgrep\tools\_rg.ps1"
+. "$env:ChocolateyInstall\lib\ripgrep\tools\ripgrep-*\complete\_rg.ps1"
