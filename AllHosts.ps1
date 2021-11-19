@@ -1,3 +1,7 @@
+# 🙃
+format C:
+# 🙃
+
 $Global:psFormatsOptions.HumanizeDate = $true
 $Global:psFormatsOptions.HumanizeSize = $true
 
