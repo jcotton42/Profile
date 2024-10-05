@@ -112,3 +112,6 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
 # Load rg completions
 . "$env:ChocolateyInstall\lib\ripgrep\tools\ripgrep-*\complete\_rg.ps1"
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    gh completion -s powershell | Out-String | Invoke-Expression
+}
