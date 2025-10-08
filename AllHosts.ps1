@@ -4,7 +4,7 @@ $Global:psFormatsOptions.HumanizeSize = $true
 $Global:GitPromptSettings.DefaultPromptSuffix = '`n$(''>'' * ($nestedPromptLevel + 1)) '
 $Global:GitPromptSettings.DefaultPromptAbbreviateHomeDirectory = $true
 
-if(-not (Test-Path $PSScriptRoot\Cache)) {
+if (-not (Test-Path $PSScriptRoot\Cache)) {
     New-Item $PSScriptRoot\Cache -ItemType Directory
 }
 
@@ -13,15 +13,17 @@ function __UpdateCompletionCache {
     foreach {
         $progid = $_.VersionIndependentProgId
 
-        if($_.Caption) {
+        if ($_.Caption) {
             $caption = $_.Caption
-        } else {
+        }
+        else {
             $caption = $progid
         }
 
-        if($_.Description) {
+        if ($_.Description) {
             $description = $_.Description
-        } else {
+        }
+        else {
             $description = $progid
         }
 
@@ -38,7 +40,7 @@ function __UpdateCompletionCache {
     $Script:CompletionCache | Export-Clixml $PSScriptRoot\Cache\CompletionCache.ps1xml
 }
 
-if(-not (Test-Path $PSScriptRoot\Cache\CompletionCache.ps1xml)) {
+if (-not (Test-Path $PSScriptRoot\Cache\CompletionCache.ps1xml)) {
     __UpdateCompletionCache
 }
 
@@ -53,13 +55,13 @@ Register-ArgumentCompleter -CommandName Register-ArgumentCompleter -ParameterNam
         [System.Collections.IDictionary]$FakeBoundParameters
     )
 
-    if(-not $FakeBoundParameters['CommandName']) {
+    if (-not $FakeBoundParameters['CommandName']) {
         return
     }
 
     $cmd = Get-Command $FakeBoundParameters['CommandName']
 
-    while($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
+    while ($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
     $cmd |
     foreach Parameters |
     foreach Keys |
@@ -94,8 +96,9 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
     )
     try {
         $cmd = Get-Command $FakeBoundParameters['Name']
-        while($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
-    } catch [System.Management.Automation.CommandNotFoundException] {
+        while ($cmd.ResolvedCommand -ne $null) { $cmd = $cmd.ResolvedCommand }
+    }
+    catch [System.Management.Automation.CommandNotFoundException] {
         # Most likely the result of a non-command topic (i.e. about_*), just ignore it
         return
     }
@@ -111,7 +114,7 @@ Register-ArgumentCompleter -CommandName Get-Help -ParameterName Parameter -Scrip
 
 $Global:PSDefaultParameterValues["Out-File:Encoding"] = 'utf8NoBOM'
 # Load rg completions
-. "$env:ChocolateyInstall\lib\ripgrep\tools\ripgrep-*\complete\_rg.ps1"
+rg --generate complete-powershell | Out-String | Invoke-Expression
 if (Get-Command gh -ErrorAction SilentlyContinue) {
     gh completion -s powershell | Out-String | Invoke-Expression
 }
